@@ -7,7 +7,7 @@ const { Genre, Movie, Actor } = require("./models");
   - duplicate entries are not allowed (try it to learn about errors)
 */
 function insertNewGenre() {
-  // Add code here
+  return Genre.create({name: "horror"});
 }
 
 /*
@@ -17,35 +17,61 @@ function insertNewGenre() {
   - the movie CANNOT be from year 2008 (try it to learn about errors)
 */
 function insertNewMovie() {
-  // Add code here
+  return Movie.create({title: "Nope", year: 2022});
 }
 
 /*
   Write a function that returns the title of the movie with ID=2
 */
-function getMovieWithId2() {
-  // Add code here
+async function getMovieWithId2() {
+  const result = await(Movie.findOne({
+    where: {
+      id : 2
+    }
+  }));
+  return result.title;
 }
 
 /*
   Write a function that returns an array of all the actor names
 */
-function getAllActors() {
-  // Add code here
+async function getAllActors() {
+  const result = await (Actor.findAll({
+    attributes: ["name"]
+  }));
+  const names = new Array(result.length);
+  for(let i = 0; i < result.length; i++){
+    names[i] = result[i].name;
+  }
+  return names;
 }
 
 /*
   Write a function that returns an array of all the movie titles from 2008
 */
-function getAllMoviesFrom2008() {
-  // Add code here
+async function getAllMoviesFrom2008() {
+  const result = await Movie.findAll({
+    where: {
+      year: 2008
+    }
+  });
+  const movies = new Array(result.length);
+  for(let i = 0; i < movies.length; i++){
+    movies[i] = result[i].title;
+  }
+  return movies;
 }
 
 /*
   Write a function that deletes the genre you added in the first function: insertNewGenre()
 */
-function deleteGenreYouAdded() {
-  // Add code here
+async function deleteGenreYouAdded() {
+  const genre = await Genre.findOne({
+    where: {
+      name: "horror"
+    }
+  });
+  return genre.destroy();
 }
 
 /*
@@ -54,8 +80,20 @@ function deleteGenreYouAdded() {
   - the actor and movie record already exist in the database
   - add the association record to the database
 */
-function associateRosarioToEagleEye() {
-  // Add code here
+async function associateRosarioToEagleEye() {
+
+  const actor = await Actor.findOne({
+    where: {
+      name: "Rosario Dawson"
+    }
+  });
+  const movie = await Movie.findOne({
+    where: {
+      title: "Eagle Eye"
+    }
+  });
+ 
+  return actor.addMovie(movie);
 }
 
 /*
@@ -65,7 +103,18 @@ function associateRosarioToEagleEye() {
   - add the association record to the database
 */
 async function associateRobertToTropicThunder() {
-  // Add code here
+  const actor = await Actor.findOne({
+    where: {
+      name: "Robert Downey Jr."
+    }
+  });
+  const movie = await Movie.findOne({
+    where: {
+      title: "Tropic Thunder"
+    }
+  });
+ 
+  return actor.addMovie(movie);
 }
 
 module.exports = {
